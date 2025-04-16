@@ -1,3 +1,4 @@
 Name of App: Brick Break
 Team Members: Derek Chang, Ethan Pan
 Project Goals: Create an app similar to that of Block Blast/Tetris where the user/player get 3 different types of "Bricks" to fill in a 8x8 grid. If the user fills a row or column the entire row gets destroyed for points, if the entire board is filled up the user get a bonus multiplier. 
+Architecture: For looping through bricks, most likely we will randomly determine which brick(s) are next in queue, and once a row/column is filled we will reset that row/col to be empty in the array. There probably will also be a high score board, which can be made using an array in "state" for records and using the .splice() and .map() methods to dusplay all the scores and high scores. For user input and displaying images, we are not certain yet how it will be implemented but a library seems most likely.
