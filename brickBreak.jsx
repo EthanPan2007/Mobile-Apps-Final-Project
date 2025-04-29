@@ -1,14 +1,118 @@
 import React, { Component } from 'react';
-import { AppRegistry, Text, View, StyleSheet } from 'react-native';
+import { AppRegistry, Text, View, StyleSheet, Image, TextInput, ImageBackground, TouchableHighlight, Alert, Dimensions, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
 
+let deviceHeight = Dimensions.get('window').height;
+let deviceWidth = Dimensions.get('window').width;
+
 export default class App extends Component {
+    
+    state = {
+        titleScreen: 'block',
+        gameScreen: 'none',
+        gameOverScreen: 'none',
+        highScoresScreen: 'none',
+        score: 0,
+        finalScore: 0,
+        records: [],
+    }
+    
+    handleGameScreenPress = () => this.setState(state=> ({
+        titleScreen: 'none',
+        gameScreen: 'block',
+        gameOverScreen: 'none',
+        highScoresScreen: 'none',
+    }));
+    
+    handleGameOverScreenPress = () => this.setState(state=> ({
+        titleScreen: 'none',
+        gameScreen: 'none',
+        gameOverScreen: 'block',
+        highScoresScreen: 'none',
+    }));
+    
+    handleHighScoresScreenPress = () => this.setState(state=> ({
+        titleScreen: 'none',
+        gameScreen: 'none',
+        gameOverScreen: 'none',
+        highScoresScreen: 'block',
+    }));
+    
+    
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.paragraph}>
-                    STart of Brick Break
-                </Text>
+                <View style={{display: this.state.titleScreen}}>
+                <View style={styles.content}>
+                    <Text style={styles.titleText}>
+                        BRICK BREAK
+                    </Text>
+                
+                    <TouchableHighlight style={styles.startButton}
+                        onPress={this.handleGameScreenPress}
+                    >
+                        <Text style={styles.startButtonText}>
+                            START
+                        </Text>
+                    </TouchableHighlight>
+                </View>
+                </View>
+                
+                <View style={{display: this.state.gameScreen}}>
+                <View style={styles.content}>
+                    <Text style={styles.highScoresText}>
+                        Game Screen Goes Here:
+                    </Text>
+                    
+                    <TouchableHighlight style={styles.temporaryButton}
+                    onPress={this.handleGameOverScreenPress}
+                    >
+                    <Text style={styles.startButtonText}>
+                        Temporary Gameover
+                    </Text>
+                    </TouchableHighlight>
+                </View>
+                </View>
+                
+                <View style={{display: this.state.gameOverScreen}}>
+                <View style={styles.content}>
+                    <Text style={styles.gameoverText}>
+                        GAME OVER
+                    </Text>
+                    
+                    <TouchableHighlight style={styles.temporaryButton}
+                    onPress={this.handleGameScreenPress}
+                    >
+                    <Text style={styles.startButtonText}>
+                        Play Again
+                    </Text>
+                    </TouchableHighlight>
+                    
+                    <TouchableHighlight style={styles.temporaryButton}
+                    onPress={this.handleHighScoresScreenPress}
+                    >
+                    <Text style={styles.startButtonText}>
+                        High Scores
+                    </Text>
+                    </TouchableHighlight>
+                </View>
+                </View>
+                
+                <View style={{display: this.state.highScoresScreen}}>
+                <View style={styles.content}>
+                    <Text style={styles.highScoresText}>
+                        HIGH SCORES
+                    </Text>
+                    
+                    <TouchableHighlight style={styles.temporaryButton}
+                    onPress={this.handleGameScreenPress}
+                    >
+                    <Text style={styles.startButtonText}>
+                        Play Again
+                    </Text>
+                    </TouchableHighlight>
+                </View>
+                </View>
             </View>
         );
     }
@@ -16,17 +120,76 @@ export default class App extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingTop: Constants.statusBarHeight,
-        backgroundColor: '#ecf0f1',
+        height: deviceHeight,
+        width: deviceWidth
     },
-    paragraph: {
+    
+    content: {
+        alignItems: 'center',
+        backgroundColor: 'royalblue',
+        height: deviceHeight
+    },
+    
+    titleText: {
         margin: 24,
-        fontSize: 18,
+        fontSize: 70,
+        fontFamily: 'courier',
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#34495e',
+        marginTop: deviceHeight/8,
+        color: 'yellow',
+        fontWeight: 'bold'
+    },
+    
+    startButton: {
+        width: deviceWidth*5/6,
+        height: deviceWidth/5,
+        backgroundColor: 'yellow',
+        borderWidth: 5,
+        borderColor: 'black',
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+        marginTop: deviceHeight*1.5/5
+    },
+    
+    temporaryButton: {
+        width: deviceWidth*5/6,
+        height: deviceWidth/5,
+        backgroundColor: 'yellow',
+        borderWidth: 5,
+        borderColor: 'black',
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+        marginBottom: 40
+    },
+    
+    gameoverText: {
+        fontSize: 50,
+        fontFamily: 'courier',
+        color: 'yellow',
+        marginTop: deviceHeight/4,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: deviceHeight/3
+    },
+    
+    highScoresText: {
+        fontSize: 50,
+        fontFamily: 'courier',
+        color: 'yellow',
+        marginTop: deviceHeight/16,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom:  deviceHeight/3
+    },
+    
+    
+    startButtonText: {
+        color: 'royalblue',
+        fontFamily: 'courier',
+        fontSize: 40,
+        fontWeight: 'bold'
     },
 });
