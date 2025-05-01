@@ -6,7 +6,6 @@ let deviceHeight = Dimensions.get('window').height;
 let deviceWidth = Dimensions.get('window').width;
 
 export default class App extends Component {
-    
     state = {
         titleScreen: 'block',
         gameScreen: 'none',
@@ -14,7 +13,23 @@ export default class App extends Component {
         highScoresScreen: 'none',
         score: 0,
         finalScore: 0,
-        records: [],
+        records: [3, 5, 2, 7, 7, 35, 76,68, 6868866868],
+    }
+    
+    updateScore = (amount) => {
+        this.setState({
+            score: this.state.score + amount
+        })
+    };
+    
+    updateRecords = (Score) => {
+        this.setState({
+            score: 0
+        })
+        
+        this.state.records.splice(this.state.records.length, 0, {
+            finalScore: Score
+        })
     }
     
     handleGameScreenPress = () => this.setState(state=> ({
@@ -104,6 +119,16 @@ export default class App extends Component {
                         HIGH SCORES
                     </Text>
                     
+                    <View style={styles.scoresContainer}>
+                    <ScrollView>
+                        {this.state.records.map((game) => (
+                            <Text style={styles.scoreText}>
+                                {game.finalScore}
+                            </Text>
+                        ))}
+                    </ScrollView>
+                    </View>
+                    
                     <TouchableHighlight style={styles.temporaryButton}
                     onPress={this.handleGameScreenPress}
                     >
@@ -182,14 +207,32 @@ const styles = StyleSheet.create({
         marginTop: deviceHeight/16,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginBottom:  deviceHeight/3
     },
-    
     
     startButtonText: {
         color: 'royalblue',
         fontFamily: 'courier',
         fontSize: 40,
         fontWeight: 'bold'
+    },
+    
+    scoresContainer: {
+        height: deviceHeight/2,
+        width: deviceWidth*5/6,
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        backgroundColor: 'lightgray',
+        borderColor: 'black',
+        borderWidth: 5,
+        marginTop: deviceHeight/20,
+        marginBottom: deviceHeight/12
+    },
+    
+    scoreText: {
+        fontSize: 24,
+        fontFamily: 'courier',
+        color: 'yellow',
+        textAlign: 'center',
     },
 });
