@@ -9,12 +9,31 @@ export default class App extends Component {
     state = {
         titleScreen: 'block',
         gameScreen: 'none',
+        shape: '',
+        grid: [
+            [1, 2, 3, 4, 5, 6, 7, 8],
+            [9,10 , 11, 12, 13, 14, 15, 16],
+            [ 17, 18, 19, 20, 21, 22, 23, 24],
+            [25 ,26 ,27 ,28 ,29 ,30 ,31 ,32 ],
+            [ 33, 34, 35, 36, 37, 38, 39, 40],
+            [ 41, 42, 43, 44, 44, 45, 46, 47],
+            [ 48, 49, 50, 51, 52, 53, 54, 55],
+            [ 56, 57, 58, 59, 60, 61, 62, 63],
+        ],
+        curRow: -1,
+        curCol: -1,
         gameOverScreen: 'none',
         highScoresScreen: 'none',
         score: 0,
         finalScore: 0,
-        records: [3, 5, 2, 7, 7, 35, 76,68, 6868866868],
+        records: [],
     }
+    
+    updateShape = (Shape) => {
+        this.setState({
+            shape: Shape
+        })
+    };
     
     updateScore = (amount) => {
         this.setState({
@@ -30,7 +49,7 @@ export default class App extends Component {
         this.state.records.splice(this.state.records.length, 0, {
             finalScore: Score
         })
-    }
+    };
     
     handleGameScreenPress = () => this.setState(state=> ({
         titleScreen: 'none',
@@ -53,6 +72,22 @@ export default class App extends Component {
         highScoresScreen: 'block',
     }));
     
+    //handleGridSquarePress = () => {
+        //if (this.state.shape == 'L') {
+            //this.updateScore(4)
+        //}
+        
+        //this.state.grid.map((row, rowIndex) => (
+            //row.map((col, colIndex) =>
+                //this.setState({
+                    //curRow: rowIndex,
+                    //curCol: colIndex
+                //})
+            //)
+        //),
+        
+        //this.state.grid[curRow][curCol].setBgColor('red'),
+    //}
     
     render() {
         return (
@@ -74,19 +109,50 @@ export default class App extends Component {
                 </View>
                 
                 <View style={{display: this.state.gameScreen}}>
-                <View style={styles.content}>
-                    <Text style={styles.highScoresText}>
-                        Game Screen Goes Here:
-                    </Text>
+                    <View style={styles.content}>
+                        <Text style={styles.scoreText}>
+                            {this.state.score}
+                        </Text>
                     
-                    <TouchableHighlight style={styles.temporaryButton}
-                    onPress={this.handleGameOverScreenPress}
-                    >
-                    <Text style={styles.startButtonText}>
-                        Temporary Gameover
-                    </Text>
-                    </TouchableHighlight>
-                </View>
+                        <View style={styles.gridContainer}>
+                            {this.state.grid.map((row, rowIndex) => (
+                                <View key={rowIndex} style={styles.row}>
+                                    {row.map((item, colIndex) => (
+                                        <TouchableHighlight key={colIndex} style={styles.gridSquare}
+                                            onPress={this.handleHighScoresScreenPress}
+                                        >
+                                            <View>
+                                                {item}
+                                            </View>
+                                        </TouchableHighlight>
+                                    ))}
+                                </View>
+                            ))}
+                        </View>
+                        
+                        <View style={styles.shapesContainer}>
+                            <TouchableHighlight
+                                onPress={() => this.updateShape('L')}
+                            >
+                                <Image
+                                    source={{ uri: 'https://codehs.com/uploads/3c0822ddebb4db619556996be923f6b5' }}
+                                    style={{ height: 60, width: 60 }}
+                                />
+                            </TouchableHighlight>
+                            
+                            <TouchableHighlight
+                                onPress={() => this.updateShape('square')}
+                            >
+                                <Image
+                                    source={{ uri: 'https://codehs.com/uploads/a38f483d41714938aa9acd221d222ca7' }}
+                                    style={{ height: 60, width: 60 }}
+                                />
+                            </TouchableHighlight>
+                        </View>
+                        
+                        
+    
+                    </View>
                 </View>
                 
                 <View style={{display: this.state.gameOverScreen}}>
@@ -122,9 +188,11 @@ export default class App extends Component {
                     <View style={styles.scoresContainer}>
                     <ScrollView>
                         {this.state.records.map((game) => (
-                            <Text style={styles.scoreText}>
-                                {game.finalScore}
-                            </Text>
+                            <View style={styles.gameContainer}>
+                                <Text style={styles.scoreText}>
+                                    {game.finalScore}
+                                </Text>
+                            </View>
                         ))}
                     </ScrollView>
                     </View>
@@ -155,6 +223,15 @@ const styles = StyleSheet.create({
         height: deviceHeight
     },
     
+    gridContainer: {
+        marginTop: deviceHeight/32
+    },
+    
+    row: {
+        flexDirection: 'row',
+        color: 'lightblue'
+    },
+    
     titleText: {
         margin: 24,
         fontSize: 70,
@@ -162,6 +239,15 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginTop: deviceHeight/8,
+        color: 'yellow',
+        fontWeight: 'bold'
+    },
+    
+    scoreText: {
+        fontSize: 70,
+        fontFamily: 'courier',
+        fontWeight: 'bold',
+        textAlign: 'center',
         color: 'yellow',
         fontWeight: 'bold'
     },
@@ -178,6 +264,21 @@ const styles = StyleSheet.create({
         marginTop: deviceHeight*1.5/5
     },
     
+    gridSquare: {
+        width: deviceWidth*19/160,
+        height: deviceWidth*19/160,
+        borderColor: 'black',
+        borderWidth: 1,
+        backgroundColor: 'lightblue'
+    },
+    
+    shapesContainer: {
+        flexDirection: 'row',
+        marginTop: 30,
+        width: deviceWidth*9/10,
+        justifyContent: 'flex-start'
+    },
+    
     temporaryButton: {
         width: deviceWidth*5/6,
         height: deviceWidth/5,
@@ -187,7 +288,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
-        marginBottom: 40
+        marginBottom: 40,
     },
     
     gameoverText: {
@@ -229,10 +330,9 @@ const styles = StyleSheet.create({
         marginBottom: deviceHeight/12
     },
     
-    scoreText: {
-        fontSize: 24,
-        fontFamily: 'courier',
-        color: 'yellow',
-        textAlign: 'center',
+    gameContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center'
     },
 });
