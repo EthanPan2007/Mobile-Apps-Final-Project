@@ -11,14 +11,14 @@ export default class App extends Component {
         gameScreen: 'none',
         shape: '',
         grid: [
-            [1, 2, 3, 4, 5, 6, 7, 8],
-            [9,10 , 11, 12, 13, 14, 15, 16],
-            [ 17, 18, 19, 20, 21, 22, 23, 24],
-            [25 ,26 ,27 ,28 ,29 ,30 ,31 ,32 ],
-            [ 33, 34, 35, 36, 37, 38, 39, 40],
-            [ 41, 42, 43, 44, 44, 45, 46, 47],
-            [ 48, 49, 50, 51, 52, 53, 54, 55],
-            [ 56, 57, 58, 59, 60, 61, 62, 63],
+            ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b'],
+            ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b'],
+            ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b'],
+            ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b'],
+            ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b'],
+            ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b'],
+            ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b'],
+            ['b', 'b', 'b', 'b', 'b', 'b', 'b', 'b'],
         ],
         curRow: -1,
         curCol: -1,
@@ -51,6 +51,8 @@ export default class App extends Component {
         })
     };
     
+    //changColor = 
+    
     handleGameScreenPress = () => this.setState(state=> ({
         titleScreen: 'none',
         gameScreen: 'block',
@@ -72,22 +74,14 @@ export default class App extends Component {
         highScoresScreen: 'block',
     }));
     
-    //handleGridSquarePress = () => {
-        //if (this.state.shape == 'L') {
-            //this.updateScore(4)
-        //}
+    handleGridSquarePress = (ROW, COL) => {
+        if (this.state.shape == 'L' || this.state.shape == 'square') {
+            this.updateScore(4)
+        }
         
-        //this.state.grid.map((row, rowIndex) => (
-            //row.map((col, colIndex) =>
-                //this.setState({
-                    //curRow: rowIndex,
-                    //curCol: colIndex
-                //})
-            //)
-        //),
         
-        //this.state.grid[curRow][curCol].setBgColor('red'),
-    //}
+    };
+    
     
     render() {
         return (
@@ -118,8 +112,8 @@ export default class App extends Component {
                             {this.state.grid.map((row, rowIndex) => (
                                 <View key={rowIndex} style={styles.row}>
                                     {row.map((item, colIndex) => (
-                                        <TouchableHighlight key={colIndex} style={styles.gridSquare}
-                                            onPress={this.handleHighScoresScreenPress}
+                                        <TouchableHighlight key={colIndex} style={styles.gridSquareB}
+                                            onPress={() => this.handleGridSquarePress(rowIndex, colIndex)}
                                         >
                                             <View>
                                                 {item}
@@ -149,8 +143,8 @@ export default class App extends Component {
                                 />
                             </TouchableHighlight>
                         </View>
-                        
-                        
+            
+            
     
                     </View>
                 </View>
@@ -264,12 +258,20 @@ const styles = StyleSheet.create({
         marginTop: deviceHeight*1.5/5
     },
     
-    gridSquare: {
+    gridSquareB: {
         width: deviceWidth*19/160,
         height: deviceWidth*19/160,
         borderColor: 'black',
         borderWidth: 1,
         backgroundColor: 'lightblue'
+    },
+    
+    gridSquareR: {
+        width: deviceWidth*19/160,
+        height: deviceWidth*19/160,
+        borderColor: 'black',
+        borderWidth: 1,
+        backgroundColor: 'red'
     },
     
     shapesContainer: {
@@ -336,3 +338,4 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
 });
+
