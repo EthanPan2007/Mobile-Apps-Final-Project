@@ -34,7 +34,12 @@ export default class App extends Component {
     }
 
     generateNextShapes = (count) => {
-        const shapes = ['L', 'square', 'vertical', 'horizontal', 'T'];
+        const shapes = [
+            'L', 'L-left', 'L-right', 'L-down',
+            'square', 'big-square',
+            'vertical', 'horizontal',
+            'T', 'T-left', 'T-right', 'T-down'
+        ];
         const newShapes = Array(count).fill().map(() => shapes[Math.floor(Math.random() * shapes.length)]);
         this.setState({ 
             nextShapes: newShapes,
@@ -81,48 +86,111 @@ export default class App extends Component {
     canPlaceShape = (shape, row, col) => {
         const { grid } = this.state;
         
-        if (shape === 'L') {
-            // Check L 
-            if (row > 8 || col > 8) return false;
+        // L shapes
+        if (shape === 'L') { // Normal L (pointing right)
+            if (row > 5 || col > 6) return false;
             return (
                 grid[row][col] === 'b' &&
                 grid[row+1][col] === 'b' &&
                 grid[row+2][col] === 'b' &&
                 grid[row+2][col+1] === 'b'
             );
+        } else if (shape === 'L-left') { // L pointing left
+            if (row > 5 || col < 1) return false;
+            return (
+                grid[row][col] === 'b' &&
+                grid[row+1][col] === 'b' &&
+                grid[row+2][col] === 'b' &&
+                grid[row+2][col-1] === 'b'
+            );
+        } else if (shape === 'L-right') { // L pointing right but upside down
+            if (row > 5 || col > 6) return false;
+            return (
+                grid[row][col] === 'b' &&
+                grid[row][col+1] === 'b' &&
+                grid[row+1][col] === 'b' &&
+                grid[row+2][col] === 'b'
+            );
+        } else if (shape === 'L-down') { // L pointing down
+            if (row > 6 || col > 5) return false;
+            return (
+                grid[row][col] === 'b' &&
+                grid[row][col+1] === 'b' &&
+                grid[row][col+2] === 'b' &&
+                grid[row+1][col] === 'b'
+            );
+            
+        // Square shapes
         } else if (shape === 'square') {
-            // Check square
-            if (row > 8 || col > 8) return false;
+            if (row > 6 || col > 6) return false;
             return (
                 grid[row][col] === 'b' &&
                 grid[row][col+1] === 'b' &&
                 grid[row+1][col] === 'b' &&
                 grid[row+1][col+1] === 'b'
             );
+        } else if (shape === 'big-square') {
+            if (row > 5 || col > 5) return false;
+            return (
+                grid[row][col] === 'b' &&
+                grid[row][col+1] === 'b' &&
+                grid[row][col+2] === 'b' &&
+                grid[row+1][col] === 'b' &&
+                grid[row+1][col+1] === 'b' &&
+                grid[row+1][col+2] === 'b' &&
+                grid[row+2][col] === 'b' &&
+                grid[row+2][col+1] === 'b' &&
+                grid[row+2][col+2] === 'b'
+            );
+            
+        // Line shapes
         } else if (shape === 'vertical') {
-            // Check vert line
-            if (row > 8) return false;
+            if (row > 5) return false;
             return (
                 grid[row][col] === 'b' &&
                 grid[row+1][col] === 'b' &&
                 grid[row+2][col] === 'b'
             );
         } else if (shape === 'horizontal') {
-            // Check hori
-            if (col > 8) return false;
+            if (col > 5) return false;
             return (
                 grid[row][col] === 'b' &&
                 grid[row][col+1] === 'b' &&
                 grid[row][col+2] === 'b'
             );
-        } else if (shape === 'T') {
-            // Check T
-            if (row > 8 || col > 8 || col < 1) return false;
+            
+        // T shapes
+        } else if (shape === 'T') { // Normal T (pointing down)
+            if (row > 6 || col < 1 || col > 6) return false;
             return (
                 grid[row][col] === 'b' &&
-                grid[row+1][col] === 'b' &&
                 grid[row+1][col-1] === 'b' &&
+                grid[row+1][col] === 'b' &&
                 grid[row+1][col+1] === 'b'
+            );
+        } else if (shape === 'T-left') { // T pointing left
+            if (row > 6 || col > 5) return false;
+            return (
+                grid[row][col] === 'b' &&
+                grid[row][col+1] === 'b' &&
+                grid[row][col+2] === 'b' &&
+                grid[row+1][col+1] === 'b'
+            );
+        } else if (shape === 'T-right') { // T pointing right
+            if (row < 1 || row > 6 || col > 5) return false;
+            return (
+                grid[row][col+1] === 'b' &&
+                grid[row+1][col] === 'b' &&
+                grid[row+1][col+1] === 'b' &&
+                grid[row+1][col+2] === 'b'
+            );
+        } else if (shape === 'T-down') { // T pointing up
+            if (row > 5 || col < 1 || col > 6) return false;
+            return (
+                grid[row][col-1] === 'b' &&
+                grid[row][col] === 'b' &&
+                grid[row][col+1] === 'b' &&
+                grid[row+1][col] === 'b'
             );
         }
         return false;
@@ -131,16 +199,46 @@ export default class App extends Component {
     placeShape = (shape, row, col) => {
         const newGrid = JSON.parse(JSON.stringify(this.state.grid));
         
+        // L shapes
         if (shape === 'L') {
             newGrid[row][col] = 'f';
             newGrid[row+1][col] = 'f';
             newGrid[row+2][col] = 'f';
             newGrid[row+2][col+1] = 'f';
+        } else if (shape === 'L-left') {
+            newGrid[row][col] = 'f';
+            newGrid[row+1][col] = 'f';
+            newGrid[row+2][col] = 'f';
+            newGrid[row+2][col-1] = 'f';
+        } else if (shape === 'L-right') {
+            newGrid[row][col] = 'f';
+            newGrid[row][col+1] = 'f';
+            newGrid[row+1][col] = 'f';
+            newGrid[row+2][col] = 'f';
+        } else if (shape === 'L-down') {
+            newGrid[row][col] = 'f';
+            newGrid[row][col+1] = 'f';
+            newGrid[row][col+2] = 'f';
+            newGrid[row+1][col] = 'f';
+            
+        // Square shapes
         } else if (shape === 'square') {
             newGrid[row][col] = 'f';
             newGrid[row][col+1] = 'f';
             newGrid[row+1][col] = 'f';
             newGrid[row+1][col+1] = 'f';
+        } else if (shape === 'big-square') {
+            newGrid[row][col] = 'f';
+            newGrid[row][col+1] = 'f';
+            newGrid[row][col+2] = 'f';
+            newGrid[row+1][col] = 'f';
+            newGrid[row+1][col+1] = 'f';
+            newGrid[row+1][col+2] = 'f';
+            newGrid[row+2][col] = 'f';
+            newGrid[row+2][col+1] = 'f';
+            newGrid[row+2][col+2] = 'f';
+            
+        // Line shapes
         } else if (shape === 'vertical') {
             newGrid[row][col] = 'f';
             newGrid[row+1][col] = 'f';
@@ -149,11 +247,18 @@ export default class App extends Component {
             newGrid[row][col] = 'f';
             newGrid[row][col+1] = 'f';
             newGrid[row][col+2] = 'f';
+            
+        // T shapes
         } else if (shape === 'T') {
             newGrid[row][col] = 'f';
-            newGrid[row+1][col] = 'f';
             newGrid[row+1][col-1] = 'f';
+            newGrid[row+1][col] = 'f';
             newGrid[row+1][col+1] = 'f';
+        } else if (shape === 'T-down') {
+            newGrid[row][col-1] = 'f';
+            newGrid[row][col] = 'f';
+            newGrid[row][col+1] = 'f';
+            newGrid[row+1][col] = 'f';
         }
         
         return newGrid;
@@ -194,7 +299,13 @@ export default class App extends Component {
         const newShapes = [...remainingShapes];
         
         if (newShapes.length < 2) {
-            newShapes.push(['L', 'square', 'vertical', 'horizontal', 'T'][Math.floor(Math.random() * 5)]);
+            const shapes = [
+                'L', 'L-left', 'L-right', 'L-down',
+                'square', 'big-square',
+                'vertical', 'horizontal',
+                'T','T-down'
+            ];
+            newShapes.push(shapes[Math.floor(Math.random() * shapes.length)]);
         }
         
         this.setState({
@@ -346,14 +457,7 @@ export default class App extends Component {
                         <View style={styles.shapesContainer}>
                             <Text style={styles.nextShapeText}>Next Shape:</Text>
                             <Image
-                                source={{ uri: 
-                                    this.state.shape == 'L' ? 'https://codehs.com/uploads/f06ba2fecef7e9d13404e68cd91e2da5' :
-                                    this.state.shape == 'square' ? 'https://codehs.com/uploads/12e99618fc183564d562af2219c670a1' :
-                                    this.state.shape == 'vertical' ? 'https://codehs.com/uploads/0573408f9b6c50cd84436e01cf7bb984' :
-                                    this.state.shape == 'horizontal' ? 'https://codehs.com/uploads/a1a196f8635a76329b4e34d84d15d360' :
-                                    this.state.shape == 'T' ? 'https://codehs.com/uploads/0be2bf4e24ba60bffc3e73ebc81fff82':
-                                    'https://codehs.com/uploads/t_shape_example_image'
-                                }}
+                                source={{ uri: this.getShapeImageUri(this.state.shape)}}
                                 style={{ height: 60, width: 60 }}
                             />
                         </View>
@@ -418,6 +522,33 @@ export default class App extends Component {
                 </View>
             </View>
         );
+    }
+    
+    getShapeImageUri = (shape) => {
+        switch(shape) {
+            case 'L':
+                return 'https://codehs.com/uploads/f06ba2fecef7e9d13404e68cd91e2da5';
+            case 'L-left':
+                return 'https://codehs.com/uploads/6d79aee16b79ce577accea5918d36142';
+            case 'L-right':
+                return 'https://codehs.com/uploads/7e4fb345a720214824452759dbf86167';
+            case 'L-down':
+                return 'https://codehs.com/uploads/bc28e53d3afc544426742f159be789dd';
+            case 'square':
+                return 'https://codehs.com/uploads/12e99618fc183564d562af2219c670a1';
+            case 'big-square':
+                return 'https://codehs.com/uploads/e5c90831237f10907ba1f198b4f31b4f';
+            case 'vertical':
+                return 'https://codehs.com/uploads/0573408f9b6c50cd84436e01cf7bb984';
+            case 'horizontal':
+                return 'https://codehs.com/uploads/a1a196f8635a76329b4e34d84d15d360';
+            case 'T':
+                return 'https://codehs.com/uploads/0be2bf4e24ba60bffc3e73ebc81fff82';
+            case 'T-down':
+                return 'https://codehs.com/uploads/e340ac244fd425359409ce532e3e295b';
+            default:
+                return 'https://codehs.com/uploads/bcbdc13058fe73fc697729a08020c773';
+        }
     }
 }
 
